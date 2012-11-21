@@ -1,0 +1,1 @@
+CREATE TABLE prices ( region_id, trit_buy, trit_sell, noc_buy, noc_sell, pye_buy, pye_sell, mex_buy, mex_sell, iso_buy, iso_sell, zyd_buy, zyd_sell, meg_buy, meg_sell, mor_buy, mor_sell, ts NUMERIC);

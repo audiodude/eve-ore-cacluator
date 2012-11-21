@@ -1,0 +1,1055 @@
+<html>
+<head>
+  <script src="javascripts/sorttable.js"></script>
+<style>
+  body {
+    background-color: #415999;
+  }
+  .container {
+    background-color:#CCCCCC;
+    margin: auto;
+    width: 900px;
+  }
+  .best {
+    color: green;
+    font-weight: bold;
+  }
+  .price_input {
+    font-size: 9px;
+  }
+  button {
+    font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+    background-color: #fed;
+    border:1px solid;
+    border-color: #696 #363 #363 #696;
+  }
+  table.sortable th {
+    cursor:pointer;
+    cursor:hand;
+  }
+  span.expan {
+    text-align: right;
+    font-weight: bold;
+    font-size: .8em;
+    color: #CC5500;
+    cursor:pointer;
+    cursor:hand;
+  }
+  .variation {
+    font-style: italic;
+    text-align: left;
+  }  
+</style>
+
+<script type="text/javascript">
+  function show_var(name) {
+    document.getElementById(name + '1').style.display = 'table-row';
+    document.getElementById(name + '2').style.display = 'table-row';
+  }
+  
+  function hide_var(name) {
+    document.getElementById(name + '1').style.display = 'none';
+    document.getElementById(name + '2').style.display = 'none';
+  }
+  
+  function show_all() {
+    show_var('vel');
+    show_var('sco');
+    show_var('pyr');
+    show_var('pla');
+    show_var('omb');
+    show_var('ker');
+    show_var('jas');
+    show_var('hem');
+    show_var('hed');
+    show_var('gne');
+    show_var('dar');
+    show_var('cro');
+    show_var('spo');
+    show_var('bis');
+    show_var('ark');
+    show_var('mer');
+    document.getElementById(name + 'all_minus').style.display = 'inline';
+    document.getElementById(name + 'all_plus').style.display = 'none';
+  }
+  
+  function hide_all() {
+    hide_var('vel');
+    hide_var('sco');
+    hide_var('pyr');
+    hide_var('pla');
+    hide_var('omb');
+    hide_var('ker');
+    hide_var('jas');
+    hide_var('hem');
+    hide_var('hed');
+    hide_var('gne');
+    hide_var('dar');
+    hide_var('cro');
+    hide_var('spo');
+    hide_var('bis');
+    hide_var('ark');
+    hide_var('mer');
+    document.getElementById(name + 'all_minus').style.display = 'none';
+    document.getElementById(name + 'all_plus').style.display = 'inline';
+  }
+
+  function save_cookie() {
+    document.cookie =
+      'ore_cookie=' + 
+        document.getElementById('trit_price').value + '/' +
+        document.getElementById('pye_price').value + '/' +
+        document.getElementById('mex_price').value + '/' +
+        document.getElementById('iso_price').value + '/' +
+        document.getElementById('noc_price').value + '/' +
+        document.getElementById('zyd_price').value + '/' +
+        document.getElementById('meg_price').value + '/' +
+        document.getElementById('mor_price').value + ';' +
+      ' expires=' + new Date(new Date ().getTime() + 31536000000).toGMTString() + '; path=/'
+  }
+  
+  function load_cookie() {
+    var ar = document.cookie.split(/;|=| /);
+    var str = '';
+    for(var i=0; i<ar.length; i++) {
+      if(ar[i] == 'ore_cookie') {
+        str = ar[i+1];
+        break;
+      }
+    }
+    if(str == '') {
+      return;
+    }
+    
+    ar = str.split(/\/|;/);
+    
+    document.getElementById('trit_price').value = ar[0];
+    document.getElementById('pye_price').value = ar[1];
+    document.getElementById('mex_price').value = ar[2];
+    document.getElementById('iso_price').value = ar[3];
+    document.getElementById('noc_price').value = ar[4];
+    document.getElementById('zyd_price').value = ar[5];
+    document.getElementById('meg_price').value = ar[6];
+    document.getElementById('mor_price').value = ar[7];
+  }
+
+  function update_isk() {
+    var trit = document.getElementById('trit_price').value;
+    var pye = document.getElementById('pye_price').value;
+    var mex = document.getElementById('mex_price').value;
+    var iso = document.getElementById('iso_price').value;
+    var noc = document.getElementById('noc_price').value;
+    var zyd = document.getElementById('zyd_price').value;
+    var meg = document.getElementById('meg_price').value;
+    var mor = document.getElementById('mor_price').value;
+    var ref = document.getElementById("ref_perc").value/100;
+    document.getElementById("vel_price").innerHTML  = (((1000*ref|0)*trit)/33.3).toFixed(4);
+    document.getElementById("vel1_price").innerHTML = (((1050*ref|0)*trit)/33.3).toFixed(4);
+    document.getElementById("vel2_price").innerHTML = (((1100*ref|0)*trit)/33.3).toFixed(4);
+    document.getElementById("sco_price").innerHTML  = (((833*ref|0)*trit  + (416*ref|0)*pye)/49.95).toFixed(4);
+    document.getElementById("sco1_price").innerHTML = (((875*ref|0)*trit  + (437*ref|0)*pye)/49.95).toFixed(4);
+    document.getElementById("sco2_price").innerHTML = (((916*ref|0)*trit  + (458*ref|0)*pye)/49.95).toFixed(4);
+    document.getElementById("pyr_price").innerHTML  = (((844*ref|0)*trit  + (59*ref|0)*pye   + (120*ref|0)*mex  + (11*ref|0)*noc)/99.9).toFixed(4);
+    document.getElementById("pyr1_price").innerHTML = (((886*ref|0)*trit  + (62*ref|0)*pye   + (126*ref|0)*mex  + (12*ref|0)*noc)/99.9).toFixed(4);
+    document.getElementById("pyr2_price").innerHTML = (((928*ref|0)*trit  + (65*ref|0)*pye   + (132*ref|0)*mex  + (12*ref|0)*noc)/99.9).toFixed(4);
+    document.getElementById("pla_price").innerHTML  = (((256*ref|0)*trit  + (512*ref|0)*pye  + (256*ref|0)*mex)/116.55).toFixed(4);
+    document.getElementById("pla1_price").innerHTML = (((269*ref|0)*trit  + (538*ref|0)*pye  + (269*ref|0)*mex)/116.55).toFixed(4);
+    document.getElementById("pla2_price").innerHTML = (((282*ref|0)*trit  + (563*ref|0)*pye  + (282*ref|0)*mex)/116.55).toFixed(4);
+    document.getElementById("omb_price").innerHTML  = (((307*ref|0)*trit  + (123*ref|0)*pye  + (307*ref|0)*iso)/300).toFixed(4);
+    document.getElementById("omb1_price").innerHTML = (((322*ref|0)*trit  + (129*ref|0)*pye  + (322*ref|0)*iso)/300).toFixed(4);
+    document.getElementById("omb2_price").innerHTML = (((338*ref|0)*trit  + (135*ref|0)*pye  + (338*ref|0)*iso)/300).toFixed(4);
+    document.getElementById("ker_price").innerHTML  = (((386 *ref|0)*trit + (773 *ref|0)*mex + (386 *ref|0)*iso)/480).toFixed(4);
+    document.getElementById("ker1_price").innerHTML = (((405 *ref|0)*trit + (812 *ref|0)*mex + (405 *ref|0)*iso)/480).toFixed(4);
+    document.getElementById("ker2_price").innerHTML = (((424 *ref|0)*trit + (850 *ref|0)*mex + (424 *ref|0)*iso)/480).toFixed(4);
+    document.getElementById("jas_price").innerHTML  = (((259 *ref|0)*trit + (259 *ref|0)*pye + (518 *ref|0)*mex + (259 *ref|0)*noc + (8 *ref|0)*zyd)/1000).toFixed(4);
+    document.getElementById("jas1_price").innerHTML = (((272 *ref|0)*trit + (272 *ref|0)*pye + (544 *ref|0)*mex + (272 *ref|0)*noc + (8 *ref|0)*zyd)/1000).toFixed(4);
+    document.getElementById("jas2_price").innerHTML = (((285 *ref|0)*trit + (285 *ref|0)*pye + (570 *ref|0)*mex + (285 *ref|0)*noc + (9 *ref|0)*zyd)/1000).toFixed(4);
+    document.getElementById("hem_price").innerHTML  = (((212 *ref|0)*trit + (212 *ref|0)*iso + (424 *ref|0)*noc + (28 *ref|0)*zyd)/1500).toFixed(4);
+    document.getElementById("hem1_price").innerHTML = (((223 *ref|0)*trit + (223 *ref|0)*iso + (445 *ref|0)*noc + (28 *ref|0)*zyd)/1500).toFixed(4);
+    document.getElementById("hem2_price").innerHTML = (((233 *ref|0)*trit + (233 *ref|0)*iso + (466 *ref|0)*noc + (31 *ref|0)*zyd)/1500).toFixed(4);
+    document.getElementById("hed_price").innerHTML  = (((708 *ref|0)*iso  + (354 *ref|0)*noc + (32 *ref|0)*zyd)/1500).toFixed(4);
+    document.getElementById("hed1_price").innerHTML = (((743 *ref|0)*iso  + (372 *ref|0)*noc + (34 *ref|0)*zyd)/1500).toFixed(4);
+    document.getElementById("hed2_price").innerHTML = (((779 *ref|0)*iso  + (389 *ref|0)*noc + (35 *ref|0)*zyd)/1500).toFixed(4);
+    document.getElementById("gne_price").innerHTML  = (((171 *ref|0)*trit + (171 *ref|0)*mex + (343 *ref|0)*iso + (171 *ref|0)*zyd)/2000).toFixed(4);
+    document.getElementById("gne1_price").innerHTML = (((180 *ref|0)*trit + (180 *ref|0)*mex + (360 *ref|0)*iso + (180 *ref|0)*zyd)/2000).toFixed(4);
+    document.getElementById("gne2_price").innerHTML = (((188 *ref|0)*trit + (188 *ref|0)*mex + (377 *ref|0)*iso + (188 *ref|0)*zyd)/2000).toFixed(4);
+    document.getElementById("dar_price").innerHTML  = (((250 *ref|0)*trit + (500 *ref|0)*noc + (250 *ref|0)*zyd)/3200).toFixed(4);
+    document.getElementById("dar1_price").innerHTML = (((263 *ref|0)*trit + (525 *ref|0)*noc + (263 *ref|0)*zyd)/3200).toFixed(4);
+    document.getElementById("dar2_price").innerHTML = (((275 *ref|0)*trit + (550 *ref|0)*noc + (275 *ref|0)*zyd)/3200).toFixed(4);
+    document.getElementById("cro_price").innerHTML  = (((331 *ref|0)*trit + (331 *ref|0)*noc + (663 *ref|0)*zyd)/4000).toFixed(4);
+    document.getElementById("cro1_price").innerHTML = (((348 *ref|0)*trit + (348 *ref|0)*noc + (696 *ref|0)*zyd)/4000).toFixed(4);
+    document.getElementById("cro2_price").innerHTML = (((364 *ref|0)*trit + (364 *ref|0)*noc + (729 *ref|0)*zyd)/4000).toFixed(4);
+    document.getElementById("spo_price").innerHTML  = (((700 *ref|0)*trit + (140 *ref|0)*pye + (140 *ref|0)*meg)/4000).toFixed(4);
+    document.getElementById("spo1_price").innerHTML = (((735 *ref|0)*trit + (147 *ref|0)*pye + (147 *ref|0)*meg)/4000).toFixed(4);
+    document.getElementById("spo2_price").innerHTML = (((770 *ref|0)*trit + (154 *ref|0)*pye + (154 *ref|0)*meg)/4000).toFixed(4);
+    document.getElementById("bis_price").innerHTML  = (((170 *ref|0)*pye  + (341 *ref|0)*zyd + (170 *ref|0)*meg)/3200).toFixed(4);
+    document.getElementById("bis1_price").innerHTML = (((179 *ref|0)*pye  + (358 *ref|0)*zyd + (179 *ref|0)*meg)/3200).toFixed(4);
+    document.getElementById("bis2_price").innerHTML = (((187 *ref|0)*pye  + (375 *ref|0)*zyd + (187 *ref|0)*meg)/3200).toFixed(4);
+    document.getElementById("ark_price").innerHTML  = (((300 *ref|0)*trit + (166 *ref|0)*zyd + (333 *ref|0)*meg)/3200).toFixed(4);
+    document.getElementById("ark1_price").innerHTML = (((315 *ref|0)*trit + (175 *ref|0)*zyd + (350 *ref|0)*meg)/3200).toFixed(4);
+    document.getElementById("ark2_price").innerHTML = (((330 *ref|0)*trit + (183 *ref|0)*zyd + (366 *ref|0)*meg)/3200).toFixed(4);
+    document.getElementById("mer_price").innerHTML  = (((530 *ref|0)*mor)/10000).toFixed(4);
+    document.getElementById("mer1_price").innerHTML = (((557 *ref|0)*mor)/10000).toFixed(4);
+    document.getElementById("mer2_price").innerHTML = (((583 *ref|0)*mor)/10000).toFixed(4);
+    
+    
+    // Mark the prices as unsorted, then call a sort
+    theadrow = document.getElementById('head_row');
+    var resort = null;
+    var reverse = false;
+    forEach(theadrow.childNodes, function(cell) {
+      if (cell.nodeType == 1) { // an element
+        if(cell.className.search(/sorttable/) != -1) {
+          resort = cell;
+        }
+        if(cell.className.search(/reverse/) != -1) {
+          reverse = true;
+        }
+         
+        cell.className = cell.className.replace('sorttable_sorted_reverse','');
+        cell.className = cell.className.replace('sorttable_sorted','');
+      }
+    });
+    if(resort) {
+      sorttable.do_sort(null, resort, reverse);
+    }
+  }
+
+
+  function update_prices(region_id) {
+    price = regions[region_id];
+    document.getElementById('trit_price').value = price.trit;
+    document.getElementById('pye_price').value = price.pye;
+    document.getElementById('mex_price').value = price.mex;
+    document.getElementById('iso_price').value = price.iso;
+    document.getElementById('noc_price').value = price.noc;
+    document.getElementById('zyd_price').value = price.zyd;
+    document.getElementById('meg_price').value = price.meg;
+    document.getElementById('mor_price').value = price.mor;  
+  }
+
+
+  regions = new Array();
+<% for p in @prices %>
+  regions[<%= p.region_id %>] = {
+    trit: <%= p.trit_buy %>,
+    pye: <%= p.pye_buy %>,
+    mex: <%= p.mex_buy %>,
+    iso: <%= p.iso_buy %>,
+    noc: <%= p.noc_buy %>,
+    zyd: <%= p.zyd_buy %>,
+    meg: <%= p.meg_buy %>,
+    mor: <%= p.mor_buy %>
+  };
+<% end %>
+</script>
+<title>Ryles Ormand's Eve Ore Calculator Table v1.3.1</title>
+</head>
+<body>
+
+<h1 style="text-align: center; font-family: sans-serif; color: white; margin-bottom: 0">Ryles Ormand's EVE Ore Calculator</h1>
+
+<div class="container">
+<table style="margin: auto; width: 800px">
+  <tr style="font-size: small">
+  <td>
+    <span style="font-size: 150%">Region Prices</span>&nbsp;&nbsp;&nbsp;&nbsp;
+  <select name="region" id="region" onchange="update_prices(document.getElementById('region').value);update_isk()">
+    <% for r in @prices.sort {|a,b| @region_to_name[a.region_id] <=> @region_to_name[b.region_id]} %>
+      <option <%= selected=r.region_id and 'selected="true"' if r.region_id == 10000002 %> value="<%= r.region_id %>"><%= @region_to_name[r.region_id]%></option>
+    <% end %>
+  </select>
+  </td>
+    <td>Tritanium</td>
+    <td>Pyerite</td>
+    <td>Mexallon</td>
+    <td>Isogen</td>
+    <td>Nocxium</td>
+    <td>Zydrine</td>
+    <td>Megacyte</td>
+    <td>Morphite</td>
+  </tr>
+  <tr>
+    <td>
+      <div style="margin-left: 0em; margin-bottom: 0.3em">   
+        <button onclick="update_prices(document.getElementById('region').value);update_isk()">Reload</button>&nbsp;&nbsp;&nbsp;<button onclick="save_cookie()">Save Custom</button>&nbsp;&nbsp;&nbsp;<button onclick="load_cookie();update_isk()">Load Custom</button>
+      </div>
+    </td>
+    <td valign="top"><input class="price_input" size="6" id="trit_price" name="trit"/></td>
+    <td valign="top"><input class="price_input" size="6" id="pye_price" name="pye"/></td>
+    <td valign="top"><input class="price_input" size="6" id="mex_price" name="mex"/></td>
+    <td valign="top"><input class="price_input" size="6" id="iso_price" name="iso"/></td>
+    <td valign="top"><input class="price_input" size="6" id="noc_price" name="noc"/></td>
+    <td valign="top"><input class="price_input" size="6" id="zyd_price" name="zyd"/></td>
+    <td valign="top"><input class="price_input" size="6" id="meg_price" name="meg"/></td>
+    <td valign="top"><input class="price_input" size="6" id="mor_price" name="mor"/></td>
+<td></td>
+  </tr>
+</table>
+
+<div style="margin-top: 1.25em; text-align: center">
+  Refining %: <input style="font-size: .75em" size="6" id="ref_perc" name="ref_perc" value="90"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="update_isk()">Recalculate isk/m3</button>
+  
+  <div style="text-align: left; margin-left: 8.15em; position: absolute; margin-top: .45em">
+    <span class = "expan" id="all_plus" onclick="show_all()">[show variants]</span><span id="all_minus" onclick="hide_all()"
+    class = "expan" style="display: none">[hide variants]</span>
+  </div>
+</div>
+
+<table class="sortable" style="margin: auto; width: 800px; text-align: right">
+  <tr id="head_row">
+    <th style="text-align: left; width: 105px;">Ore <span style="color: #CCCCCC;" id="sorttable_sortfwdind"> ▾</span></th>
+    <th style="width: 85px">Sec</th>
+    <th style="width: 80px">Batch</th>
+    <th>Trit</th>
+    <th>Pye</th>
+    <th>Mex</th>
+    <th>Iso</th>
+    <th>Noc</th>
+    <th>Zyd</th>
+    <th>Meg</th>
+    <th>Mor</th>
+    <th>isk/m3</th>
+  </tr>
+  <tr>
+    <td style="text-align: left">Veldspar</td>
+    <td>All</td>
+    <td>333</td>
+    <td class="best">1000</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="vel_price">-</td>
+  </tr>
+  <tr id="vel1" style="display: none">
+    <td class="variation">Conc. Veldspar</td>
+    <td></td>
+    <td>333</td>
+    <td class="best">1050</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="vel1_price">-</td>
+  </tr>
+  <tr id="vel2" style="display: none">
+    <td class="variation">Dense Veldspar</td>
+    <td></td>
+    <td>333</td>
+    <td class="best">1100</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="vel2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Scordite</td>
+    <td>All</td>
+    <td>333</td>
+    <td>833</td>
+    <td class="best">416</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="sco_price">-</td>
+  </tr>
+  <tr id="sco1" style="display: none">
+    <td class="variation">Cond. Scordite</td>
+    <td></td>
+    <td>333</td>
+    <td>875</td>
+    <td class="best">437</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="sco1_price">-</td>
+  </tr>
+  <tr id="sco2" style="display: none">
+    <td class="variation">Mass. Scordite</td>
+    <td></td>
+    <td>333</td>
+    <td>916</td>
+    <td class="best">458</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="sco2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Pyroxeres</td>
+    <td>A/C 9</td>
+    <td>333</td>
+    <td>844</td>
+    <td>59</td>
+    <td>120</td>
+    <td>-</td>
+    <td>11</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="pyr_price">-</td>
+  </tr>
+  <tr id="pyr1" style="display: none">
+    <td class="variation">Solid Pyroxeres</td>
+    <td></td>
+    <td>333</td>
+    <td>886</td>
+    <td>62</td>
+    <td>126</td>
+    <td>-</td>
+    <td>12</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="pyr1_price">-</td>
+  </tr>
+  <tr id="pyr2" style="display: none">
+    <td class="variation">Viscous Pyrox.</td>
+    <td></td>
+    <td>333</td>
+    <td>928</td>
+    <td>65</td>
+    <td>132</td>
+    <td>-</td>
+    <td>12</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="pyr2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Plagioclase</td>
+    <td>G/M 9, C 7</td>
+    <td>333</td>
+    <td>256</td>
+    <td>512</td>
+    <td class="best">256</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="pla_price">-</td>
+  </tr>
+  <tr id="pla1" style="display: none">
+    <td class="variation">Azure Plag.</td>
+    <td></td>
+    <td>333</td>
+    <td>269</td>
+    <td>538</td>
+    <td class="best">269</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="pla1_price">-</td>
+  </tr>
+  <tr id="pla2" style="display: none">
+    <td class="variation">Rich Plag.</td>
+    <td></td>
+    <td>333</td>
+    <td>282</td>
+    <td>563</td>
+    <td class="best">282</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="pla2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Omber</td>
+    <td>G/M 7</td>
+    <td>500</td>
+    <td>307</td>
+    <td>123</td>
+    <td>-</td>
+    <td class="best">307</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="omb_price">-</td>
+  </tr>
+  <tr id="omb1" style="display: none">
+    <td class="variation">Silvery Omber</td>
+    <td></td>
+    <td>500</td>
+    <td>322</td>
+    <td>129</td>
+    <td>-</td>
+    <td class="best">322</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="omb1_price">-</td>
+  </tr>
+  <tr id="omb2" style="display: none">
+    <td class="variation">Golden Omber</td>
+    <td></td>
+    <td>500</td>
+    <td>338</td>
+    <td>135</td>
+    <td>-</td>
+    <td class="best">338</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="omb2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Kernite</td>
+    <td>A 7, C/M 4</td>
+    <td>400</td>
+    <td>386</td>
+    <td>-</td>
+    <td>773</td>
+    <td>386</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="ker_price">-</td>
+  </tr>
+  <tr id="ker1" style="display: none">
+    <td class="variation">Lumin. Kernite</td>
+    <td></td>
+    <td>400</td>
+    <td>405</td>
+    <td>-</td>
+    <td>812</td>
+    <td>405</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="ker1_price">-</td>
+  </tr>
+  <tr id="ker2" style="display: none">
+    <td class="variation">Fiery Kernite</td>
+    <td></td>
+    <td>400</td>
+    <td>424</td>
+    <td>-</td>
+    <td>850</td>
+    <td>425</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="ker2_price">-</td>
+  </tr>
+  <tr>
+     <td style="text-align: left">Jaspet</td>
+     <td>A/G 4</td>
+     <td>500</td>
+     <td>259</td>
+     <td>259</td>
+     <td>518</td>
+     <td>-</td>
+     <td>259</td>
+     <td>8</td>
+     <td>-</td>
+     <td>-</td>
+     <td id="jas_price">-</td>
+  </tr>
+  <tr id="jas1" style="display: none">
+     <td class="variation">Pure Jaspet</td>
+     <td></td>
+     <td>500</td>
+     <td>272</td>
+     <td>272</td>
+     <td>544</td>
+     <td>-</td>
+     <td>272</td>
+     <td>8</td>
+     <td>-</td>
+     <td>-</td>
+     <td id="jas1_price">-</td>
+  </tr>
+  <tr id="jas2" style="display: none">
+     <td class="variation">Pristine Jaspet</td>
+     <td></td>
+     <td>500</td>
+     <td>285</td>
+     <td>285</td>
+     <td>570</td>
+     <td>-</td>
+     <td>285</td>
+     <td>9</td>
+     <td>-</td>
+     <td>-</td>
+     <td id="jas2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Hemorphite</td>
+    <td>A/G 2</td>
+    <td>500</td>
+    <td>212</td>
+    <td>-</td>
+    <td>-</td>
+    <td>212</td>
+    <td class="best">424</td>
+    <td>28</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="hem_price">-</td>
+  </tr>
+  <tr id="hem1" style="display: none">
+    <td class="variation">Vivid Hemor.</td>
+    <td></td>
+    <td>500</td>
+    <td>223</td>
+    <td>-</td>
+    <td>-</td>
+    <td>223</td>
+    <td class="best">445</td>
+    <td>29</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="hem1_price">-</td>
+  </tr>
+  <tr id="hem2" style="display: none">
+    <td class="variation">Radiant Hemor.</td>
+    <td></td>
+    <td>500</td>
+    <td>233</td>
+    <td>-</td>
+    <td>-</td>
+    <td>233</td>
+    <td class="best">466</td>
+    <td>31</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="hem2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Hedbergite</td>
+    <td>C/M 2</td>
+    <td>500</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>708</td>
+    <td>354</td>
+    <td>32</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="hed_price">-</td>
+  </tr>
+  <tr id="hed1" style="display: none">
+    <td class="variation">Vitric Hedber.</td>
+    <td></td>
+    <td>500</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>743</td>
+    <td>372</td>
+    <td>34</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="hed1_price">-</td>
+  </tr>
+  <tr id="hed2" style="display: none">
+    <td class="variation">Glazed Hedber.</td>
+    <td></td>
+    <td>500</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>779</td>
+    <td>389</td>
+    <td>35</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="hed2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Gneiss</td>
+    <td>0</td>
+    <td>400</td>
+    <td>171</td>
+    <td>-</td>
+    <td>171</td>
+    <td>343</td>
+    <td>-</td>
+    <td>171</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="gne_price">-</td>
+  </tr>
+  <tr id="gne1" style="display:none">
+    <td class="variation">Irid. Gneiss</td>
+    <td></td>
+    <td>400</td>
+    <td>180</td>
+    <td>-</td>
+    <td>180</td>
+    <td>360</td>
+    <td>-</td>
+    <td>180</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="gne1_price">-</td>
+  </tr>
+  <tr id="gne2" style="display:none">
+    <td class="variation">Prism. Gneiss</td>
+    <td></td>
+    <td>400</td>
+    <td>188</td>
+    <td>-</td>
+    <td>188</td>
+    <td>377</td>
+    <td>-</td>
+    <td>188</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="gne2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Dark Ochre</td>
+    <td>0</td>
+    <td>400</td>
+    <td>250</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>500</td>
+    <td>250</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="dar_price">-</td>
+  </tr>
+  <tr id="dar1" style="display: none">
+    <td class="variation">Onyx Ochre</td>
+    <td></td>
+    <td>400</td>
+    <td>263</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>525</td>
+    <td>263</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="dar1_price">-</td>
+  </tr>
+  <tr id="dar2" style="display: none">
+    <td class="variation">Obsidian Ochre</td>
+    <td></td>
+    <td>400</td>
+    <td>275</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>550</td>
+    <td>275</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="dar2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Crokite</td>
+    <td>0</td>
+    <td>250</td>
+    <td>331</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>331</td>
+    <td class="best">663</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="cro_price">-</td>
+  </tr>
+  <tr id="cro1" style="display: none">
+    <td class="variation">Sharp Crokite</td>
+    <td></td>
+    <td>250</td>
+    <td>348</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>348</td>
+    <td class="best">696</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="cro1_price">-</td>
+  </tr>
+  <tr id="cro2" style="display: none">
+    <td class="variation">Crystal. Crokite</td>
+    <td></td>
+    <td>250</td>
+    <td>364</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>364</td>
+    <td class="best">729</td>
+    <td>-</td>
+    <td>-</td>
+    <td id="cro2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Spodumain</td>
+    <td>0</td>
+    <td>250</td>
+    <td>700</td>
+    <td>140</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>140</td>
+    <td>-</td>
+    <td id="spo_price">-</td>
+  </tr>
+  <tr id="spo1" style="display: none">
+    <td class="variation">Bright Spod.</td>
+    <td></td>
+    <td>250</td>
+    <td>735</td>
+    <td>147</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>147</td>
+    <td>-</td>
+    <td id="spo1_price">-</td>
+  </tr>
+  <tr id="spo2" style="display: none">
+    <td class="variation">Gleaming Spod.</td>
+    <td></td>
+    <td>250</td>
+    <td>770</td>
+    <td>154</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>154</td>
+    <td>-</td>
+    <td id="spo2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Bistot</td>
+    <td>0</td>
+    <td>200</td>
+    <td>-</td>
+    <td>170</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>341</td>
+    <td>170</td>
+    <td>-</td>
+    <td id="bis_price">-</td>
+  </tr>
+  <tr id="bis1" style="display: none">
+    <td class="variation">Triclin. Bistot</td>
+    <td></td>
+    <td>200</td>
+    <td>-</td>
+    <td>179</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>358</td>
+    <td>179</td>
+    <td>-</td>
+    <td id="bis1_price">-</td>
+  </tr>
+  <tr id="bis2" style="display: none">
+    <td class="variation">Mono. Bistot</td>
+    <td></td>
+    <td>200</td>
+    <td>-</td>
+    <td>187</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>375</td>
+    <td>187</td>
+    <td>-</td>
+    <td id="bis2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Arkonor</td>
+    <td>0</td>
+    <td>400</td>
+    <td>300</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>166</td>
+    <td class="best">333</td>
+    <td>-</td>
+    <td id="ark_price">-</td>
+  </tr>
+  <tr id="ark1" style="display: none">
+    <td class="variation">Crims. Arkonor</td>
+    <td></td>
+    <td>400</td>
+    <td>315</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>175</td>
+    <td class="best">350</td>
+    <td>-</td>
+    <td id="ark1_price">-</td>
+  </tr>
+  <tr id="ark2" style="display: none">
+    <td class="variation">Prime Arkonor</td>
+    <td></td>
+    <td>400</td>
+    <td>330</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>183</td>
+    <td class="best">366</td>
+    <td>-</td>
+    <td id="ark2_price">-</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">Mercoxit</td>
+    <td>0</td>
+    <td>250</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td class="best">530</td>
+    <td id="mer_price">-</td>
+  </tr>
+  <tr id="mer1" style="display: none">
+    <td class="variation">Magma Merc.</td>
+    <td></td>
+    <td>250</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td class="best">557</td>
+    <td id="mer1_price">-</td>
+  </tr>
+  <tr id="mer2" style="display: none">
+    <td class="variation">Vitreous Merc.</td>
+    <td></td>
+    <td>250</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td class="best">583</td>
+    <td id="mer2_price">-</td>
+  </tr>
+</table>
+</div>
+
+<!-- Google Ads -->
+<div style=" margin-top: 0.75em; text-align:center">
+<div class="googleAds" style="width:80%; margin: auto">
+<script type="text/javascript"><!--
+google_ad_client = "pub-9496308516013012";
+/* 728x90, created 9/22/09 */
+google_ad_slot = "7138924408";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+</div>
+<!-- /Google Ads -->
+
+<div style="width:850px; font-family: sans-serif; margin-left: auto; margin-right: auto; margin-top: 0.75em; background: white; padding-bottom: .05em">
+  <div style="font-style: italic; font-size: 1.4em; padding-left: .5em; padding-top: .25em">Instructions:</div>
+  <div style="width: 450px; height: 5.45em; float: left">
+    <ul><li>Orange button shows/hides variations.</li><li>Refining % = yield - taxes (total percent ore received).</li><li>"Save custom" and "Load custom" store
+      price data in a cookie.</li></ul>
+  </div>
+  <div style="width: 400px; height: 5.45em; float: left">
+    <ul><li>Values in green represent the optimal quantity of minerals per m3.</li><li>Click on any column heading to sort.</li></ul>
+  </div>
+  <ul style="clear:both; padding-top: 2em"><li>'Sec' column means the highest security of the system that the ore is available in, ie:<br/>'A 7, C/M 4' 
+means Amarr 0.7 or Caldari
+    0.4 or Minmatar 0.4 (or below).</li></ul>
+</div>
+
+<script type="text/javascript">
+  update_prices(<%= selected %>);
+  update_isk();
+</script>
+
+
+<h3 style="color: white; text-align:center">
+  Price data is updated every 3 hours from <a href="http://www.eve-central.com">www.eve-central.com</a><br/>
+  Thanks to <a href="http://eve.grismar.net/ore/">http://eve.grismar.net/ore/</a> for the idea and seed data!<br/>
+  Thanks to <a href="http://www.kryogenix.org/code/browser/sorttable/">Stuart Langridge</a> for the sorttable.js script!
+</h3>
+
+
+
+<div style="width:40%; text-align: center; clear:left; margin-right: auto; margin-bottom:auto; margin-left: auto; margin-top: 2em; color:white;	font-size:100%;">
+  Contact me through email me using <a href="http://www.whspr.me/Wf">this form</a>.
+</span>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+  document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+  try {
+    var pageTracker = _gat._getTracker("UA-8311622-1");
+    pageTracker._trackPageview();
+  } catch(err) {}
+</script>
+<!-- /Google Analytics -->
+</body>
+</html>
